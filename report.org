@@ -163,7 +163,3 @@ vector<double> nsol(const int n, const double sigma, const vector<double> &u)
     return u_next;
 }
 #+END_SRC
-** Graphs
-*** Forward Difference
-*** Backward Difference
-*** Central Difference
