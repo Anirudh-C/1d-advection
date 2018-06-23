@@ -25,7 +25,7 @@ The space derivative can be approximated in three different schemes:
 **** Description
 $$\frac{\partial}{\partial x} u(x,t_n) \bigg|_{x=x_i} \Rightarrow \frac{U_{i+1}^{n+1} - U_i^n}{\Delta x}$$
 Thus we get,
-$$\frac{U_i^{n+1} - U_i^n}{\Delta t} + a \frac{U_{i+1}^{n+1} - U_i^n}{\Delta x}$$
+$$\frac{U_i^{n+1} - U_i^n}{\Delta t} + a \frac{U_{i+1}^{n+1} - U_i^n}{\Delta x} = 0$$
 Define,
 $$\sigma = \frac{a \Delta t}{\Delta x}$$
 Rearranging we get,
@@ -35,6 +35,7 @@ $$i=0,1,\ldots,N-2 \qquad n = 0,1,2,\ldots$$
 With the periodic boundary condition we define,
 $$U_{N-1}^{n+1} = \left( 1 + \sigma \right) U_{N-1}^n - \sigma U_{1}^n$$
 **** Stability
+
 Using Fourier Analysis we get, the solution
 $$U_i^n = \beta^n e^{i l x_i}$$
 Substituting in the scheme we get,
@@ -46,7 +47,7 @@ Clearly, $\lvert \beta \rvert > 1$. Hence, the forward difference scheme is unco
 **** Description
 $$\frac{\partial}{\partial x} u(x,t_n) \bigg|_{x=x_i} \Rightarrow \frac{U_i^{n+1} - U_{i-1}^n}{\Delta x}$$
 Thus we get,
-$$\frac{U_i^{n+1} - U_i^n}{\Delta t} + a \frac{U_i^{n+1} - U_{i-1}^n}{\Delta x}$$
+$$\frac{U_i^{n+1} - U_i^n}{\Delta t} + a \frac{U_i^{n+1} - U_{i-1}^n}{\Delta x} = 0$$
 Define,
 $$\sigma = \frac{a \Delta t}{\Delta x}$$
 Rearranging we get,
@@ -56,6 +57,7 @@ $$i=1,2,\ldots,N-1 \qquad n = 0,1,2,\ldots$$
 With the periodic boundary condition we define,
 $$U_{0}^{n+1} = \left( 1 - \sigma \right) U_{0}^n + \sigma U_{N-2}^n$$
 **** Stability
+
 Using Fourier Analysis we get, the solution
 $$U_i^n = \beta^n e^{i l x_i}$$
 Substituting in the scheme we get,
@@ -69,7 +71,7 @@ $\lvert \beta \rvert < 1$ only when $\sigma < 1$. Hence the bacward difference s
 **** Description
 $$\frac{\partial}{\partial x} u(x,t_n) \bigg|_{x=x_i} \Rightarrow \frac{U_{i+1}^{n+1} - U_{i-1}^n}{\Delta x}$$
 Thus we get,
-$$\frac{U_i^{n+1} - U_i^n}{\Delta t} + a \frac{U_{i+1}^{n+1} - U_{i-1}^n}{\Delta x}$$
+$$\frac{U_i^{n+1} - U_i^n}{\Delta t} + a \frac{U_{i+1}^{n+1} - U_{i-1}^n}{\Delta x} = 0$$
 Define,
 $$\sigma = \frac{a \Delta t}{\Delta x}$$
 Rearranging we get,
@@ -80,6 +82,7 @@ With the periodic boundary condition we define,
 $$U_0^{n+1} = U_0^n - \frac{\sigma}{2} U_{1}^n + \frac{\sigma}{2} U_{N-2}^n$$
 $$U_{N-1}^{n+1} = U_{N-1}^n - \frac{\sigma}{2} U_{1}^n + \frac{\sigma}{2} U_{N-2}^n$$
 **** Stability
+
 Using Fourier Analysis we get, the solution
 $$U_i^n = \beta^n e^{i l x_i}$$
 Substituting in the scheme we get,
@@ -119,6 +122,7 @@ vector<double> nsol(const int n, const double sigma, const vector<double> &u)
 #+END_SRC
 *** Backward Difference
 #+BEGIN_SRC c++
+// This method returns the current state of the solution after n time steps
 vector<double> nsol(const int n, const double sigma, const vector<double> &u)
 {
     int size = u.size();
@@ -139,6 +143,7 @@ vector<double> nsol(const int n, const double sigma, const vector<double> &u)
 #+END_SRC
 *** Central Difference
 #+BEGIN_SRC c++
+// This method returns the current state of the solution after n time steps
 vector<double> nsol(const int n, const double sigma, const vector<double> &u)
 {
     int size = u.size();
