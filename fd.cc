@@ -16,7 +16,7 @@ vector<double> nsol(const int n, const double sigma, const vector<double> &u)
     vector<double> u_next(size,0.0);
     for(unsigned int k=0;k<n;k++)
     {
-        u_next[size-1] = (1+sigma)*u_prev[size-1];
+        u_next[size-1] = (1+sigma)*u_prev[size-1] - sigma*u_prev[1];
         for(unsigned int i=0;i<size-1;i++)
         {
             u_next[i] = (1+sigma)*u_prev[i] - sigma*u_prev[i+1];
