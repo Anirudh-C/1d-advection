@@ -32,7 +32,7 @@ int main()
     double h = 1.0/(N-1);
     vector<double> x(N,0.0);
     vector<double> u_prev(N,0.0);
-    for(unsigned int i=0;i<N-1;i++)
+    for(unsigned int i=0;i<N;i++)
     {
         x[i] = i*h;
         u_prev[i] = sin(2*M_PI*x[i]);
