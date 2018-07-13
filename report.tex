@@ -1,4 +1,4 @@
-% Created 2018-06-23 Sat 23:16
+% Created 2018-07-13 Fri 11:20
 % Intended LaTeX compiler: pdflatex
 \documentclass[11pt]{article}
 \usepackage[utf8]{inputenc}
@@ -14,31 +14,31 @@
 \usepackage{amssymb}
 \usepackage{capt-of}
 \usepackage{hyperref}
-\date{\today}
-\title{}
+\author{Anirudh C}
+\date{}
+\title{1D Advection Equation}
 \hypersetup{
- pdfauthor={},
- pdftitle={},
+ pdfauthor={Anirudh C},
+ pdftitle={1D Advection Equation},
  pdfkeywords={},
  pdfsubject={},
  pdfcreator={Emacs 26.1 (Org mode 9.1.9)}, 
  pdflang={English}}
 \begin{document}
 
+\maketitle
 \tableofcontents
 
-\section{1D Advection Equation}
-\label{sec:orgfada84c}
-\subsection{Description}
-\label{sec:orgc50bc7d}
+\section{Description}
+\label{sec:org7c9dfc4}
 Consider the 1D advection equation,
 $$u_t + a u_x = 0$$
 defined on the domain \([a,b]\)
 
 With periodic boundary conditions, that is,
 $$u(x+1,t) = u(x,t)$$
-\subsection{Discretization}
-\label{sec:orge79bf49}
+\section{Discretization}
+\label{sec:org42636e3}
 Partition the domain into \(N\) points, such that
 $$x_i = i \Delta x$$
 where, \(\Delta x\) is the partition size defined as,
@@ -53,11 +53,10 @@ $$U_i^n \approx u(x_i,t_n)$$
 By the finite difference method the time derivative is approximated using a forward difference scheme.
 $$\frac{\partial}{\partial t} u(x_i,t) \bigg|_{t=t_n} \Rightarrow \frac{U_i^{n+1} - U_i^n}{\Delta t}$$
 The space derivative can be approximated in three different schemes:
-\subsubsection{Forward Difference}
-\label{sec:org03cc0ae}
-\begin{enumerate}
-\item Description
-\label{sec:org9fb14fc}
+\subsection{Forward Difference}
+\label{sec:orgaeab8ce}
+\subsubsection{Description}
+\label{sec:orgb9f309e}
 $$\frac{\partial}{\partial x} u(x,t_n) \bigg|_{x=x_i} \Rightarrow \frac{U_{i+1}^{n+1} - U_i^n}{\Delta x}$$
 Thus we get,
 $$\frac{U_i^{n+1} - U_i^n}{\Delta t} + a \frac{U_{i+1}^{n+1} - U_i^n}{\Delta x} = 0$$
@@ -69,8 +68,8 @@ where,
 $$i=0,1,\ldots,N-2 \qquad n = 0,1,2,\ldots$$
 With the periodic boundary condition we define,
 $$U_{N-1}^{n+1} = \left( 1 + \sigma \right) U_{N-1}^n - \sigma U_{1}^n$$
-\item Stability
-\label{sec:org364e93e}
+\subsubsection{Stability}
+\label{sec:orge836e3c}
 
 Using Fourier Analysis we get, the solution
 $$U_i^n = \beta^n e^{i l x_i}$$
@@ -78,13 +77,36 @@ Substituting in the scheme we get,
 $$\beta^{n+1} e^{i l x_i} = \left( 1 + \sigma \right) \beta^n e^{i l x_i} - \sigma \beta^n e^{i l x_{i+1}}$$
 Thus,
 $$\beta = 1 + \sigma - \sigma e^{i l \Delta x}$$
-Clearly, \(\lvert \beta \rvert > 1\). Hence, the forward difference scheme is unconditionally unstable.
-\end{enumerate}
-\subsubsection{Backward Difference}
-\label{sec:orgbf50a0b}
-\begin{enumerate}
-\item Description
-\label{sec:org81755d0}
+$$\beta = 1 + \sigma - \sigma \left( cos(l \Delta x) + i sin(\Delta x) \right)$$
+$$\lvert \beta \rvert = 1 + 2 \sigma \left( \sigma +1 \right) \left( 1 - cos(l \Delta x) \right)$$
+
+\begin{itemize}
+\item If \(a<0\)
+
+$$\sigma < 0$$
+For a stable solution we need \(\lvert \beta \rvert < 1\)
+$$1 + 2 \sigma \left( \sigma +1 \right) \left( 1 - cos(l \Delta x) \right) <1$$
+$$2 \sigma \left( \sigma +1 \right) \left( 1 - cos(l \Delta x) \right) <0$$
+Since \(\sigma <0\) and \(1 - cos(l \Delta x) > 0\)
+$$\sigma + 1 > 0 \Rightarrow \sigma > -1$$
+Thus if \(a<0\) the forward scheme is stable iff \(\sigma > -1\)
+
+\item If \(a>0\)
+
+$$\sigma > 0$$
+For a stable solution we need \(\lvert \beta \rvert < 1\)
+$$1 + 2 \sigma \left( \sigma +1 \right) \left( 1 - cos(l \Delta x) \right) <1$$
+$$2 \sigma \left( \sigma +1 \right) \left( 1 - cos(l \Delta x) \right) <0$$
+Since \(\sigma >0\) and \(1 - cos(l \Delta x) > 0\)
+$$\sigma + 1<0 \Rightarrow \sigma < -1$$
+This is not possible
+
+Thus if \(a>0\) the forward scheme is unconditionally unstable.
+\end{itemize}
+\subsection{Backward Difference}
+\label{sec:org7518942}
+\subsubsection{Description}
+\label{sec:org8271bcc}
 $$\frac{\partial}{\partial x} u(x,t_n) \bigg|_{x=x_i} \Rightarrow \frac{U_i^{n+1} - U_{i-1}^n}{\Delta x}$$
 Thus we get,
 $$\frac{U_i^{n+1} - U_i^n}{\Delta t} + a \frac{U_i^{n+1} - U_{i-1}^n}{\Delta x} = 0$$
@@ -96,8 +118,8 @@ where,
 $$i=1,2,\ldots,N-1 \qquad n = 0,1,2,\ldots$$
 With the periodic boundary condition we define,
 $$U_{0}^{n+1} = \left( 1 - \sigma \right) U_{0}^n + \sigma U_{N-2}^n$$
-\item Stability
-\label{sec:orgf11211b}
+\subsubsection{Stability}
+\label{sec:org09fdb0e}
 
 Using Fourier Analysis we get, the solution
 $$U_i^n = \beta^n e^{i l x_i}$$
@@ -107,13 +129,35 @@ Thus,
 $$\beta = 1 - \sigma + \sigma e^{- i l \Delta x}$$
 $$\beta = 1 - \sigma + \sigma cos(l \Delta x) - i \sigma sin(l \Delta x)$$
 $$\lvert \beta \rvert = 1 + 2 \sigma \left( \sigma -1 \right) \left( 1 - cos(l \Delta x) \right)$$
-\(\lvert \beta \rvert < 1\) only when \(\sigma < 1\). Hence the bacward difference scheme is stable only when \(\sigma < 1\).
-\end{enumerate}
-\subsubsection{Central Difference}
-\label{sec:org0beb050}
-\begin{enumerate}
-\item Description
-\label{sec:orgbb1a0b0}
+
+\begin{itemize}
+\item If \(a<0\)
+
+$$\sigma < 0$$
+For a stable solution we need \(\lvert \beta \rvert < 1\)
+$$1 + 2 \sigma \left( \sigma -1 \right) \left( 1 - cos(l \Delta x) \right) <1$$
+$$2 \sigma \left( \sigma -1 \right) \left( 1 - cos(l \Delta x) \right) <0$$
+Since \(\sigma <0\) and \(1 - cos(l \Delta x) > 0\)
+$$\sigma - 1 > 0 \Rightarrow \sigma > 1$$
+This is not possible
+
+Thus if \(a<0\) the backward scheme is unconditionally unstable.
+
+\item If \(a>0\)
+
+$$\sigma > 0$$
+For a stable solution we need \(\lvert \beta \rvert < 1\)
+$$1 + 2 \sigma \left( \sigma -1 \right) \left( 1 - cos(l \Delta x) \right) <1$$
+$$2 \sigma \left( \sigma -1 \right) \left( 1 - cos(l \Delta x) \right) <0$$
+Since \(\sigma >0\) and \(1 - cos(l \Delta x) > 0\)
+$$\sigma -1 < 0 \Rightarrow \sigma < 1$$
+
+Thus if \(a>0\) the backward scheme is stable iff \(\sigma < 1\).
+\end{itemize}
+\subsection{Central Difference}
+\label{sec:orgb1047b1}
+\subsubsection{Description}
+\label{sec:orge42c561}
 $$\frac{\partial}{\partial x} u(x,t_n) \bigg|_{x=x_i} \Rightarrow \frac{U_{i+1}^{n+1} - U_{i-1}^n}{\Delta x}$$
 Thus we get,
 $$\frac{U_i^{n+1} - U_i^n}{\Delta t} + a \frac{U_{i+1}^{n+1} - U_{i-1}^n}{\Delta x} = 0$$
@@ -126,8 +170,8 @@ $$i=1,2,\ldots,N-2 \qquad n = 0,1,2,\ldots$$
 With the periodic boundary condition we define,
 $$U_0^{n+1} = U_0^n - \frac{\sigma}{2} U_{1}^n + \frac{\sigma}{2} U_{N-2}^n$$
 $$U_{N-1}^{n+1} = U_{N-1}^n - \frac{\sigma}{2} U_{1}^n + \frac{\sigma}{2} U_{N-2}^n$$
-\item Stability
-\label{sec:org820b7a5}
+\subsubsection{Stability}
+\label{sec:orga1a91a9}
 
 Using Fourier Analysis we get, the solution
 $$U_i^n = \beta^n e^{i l x_i}$$
@@ -139,16 +183,15 @@ $$\lvert \beta \rvert = 1 + \sigma^{2} \sin^{2} (l \Delta x)$$
 Clearly, \(\lvert \beta \rvert > 1\). Hence, the central difference scheme is unconditionally unstable.
 
 But \(\beta\) is close to one if \(\sigma < 1\), meaning the solution slowly grows in amplitude for \(\sigma < 1\)
-\end{enumerate}
-\subsection{Implementation}
-\label{sec:org303aae6}
+\section{Implementation}
+\label{sec:orgf83e68a}
 \begin{verbatim}
 #include <iostream>
 #include <vector>
 \end{verbatim}
 
-\subsubsection{Forward Difference}
-\label{sec:orge51151f}
+\subsection{Forward Difference}
+\label{sec:org1479429}
 \begin{verbatim}
 // This method returns the current state of the solution after n time steps
 vector<double> nsol(const int n, const double sigma, const vector<double> &u)
@@ -169,8 +212,8 @@ vector<double> nsol(const int n, const double sigma, const vector<double> &u)
     return u_next;
 }
 \end{verbatim}
-\subsubsection{Backward Difference}
-\label{sec:orgc39fc6f}
+\subsection{Backward Difference}
+\label{sec:org9b5da33}
 \begin{verbatim}
 // This method returns the current state of the solution after n time steps
 vector<double> nsol(const int n, const double sigma, const vector<double> &u)
@@ -191,8 +234,8 @@ vector<double> nsol(const int n, const double sigma, const vector<double> &u)
     return u_next;
 }
 \end{verbatim}
-\subsubsection{Central Difference}
-\label{sec:orge0084b3}
+\subsection{Central Difference}
+\label{sec:org3d7171f}
 \begin{verbatim}
 // This method returns the current state of the solution after n time steps
 vector<double> nsol(const int n, const double sigma, const vector<double> &u)

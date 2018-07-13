@@ -1,12 +1,14 @@
-* 1D Advection Equation
-** Description
+#+TITLE: 1D Advection Equation
+#+AUTHOR: Anirudh C
+#+OPTIONS: date:nil
+* Description
 Consider the 1D advection equation,
 $$u_t + a u_x = 0$$
 defined on the domain $[a,b]$
 
 With periodic boundary conditions, that is,
 $$u(x+1,t) = u(x,t)$$
-** Discretization
+* Discretization
 Partition the domain into $N$ points, such that
 $$x_i = i \Delta x$$
 where, $\Delta x$ is the partition size defined as,
@@ -21,8 +23,8 @@ $$U_i^n \approx u(x_i,t_n)$$
 By the finite difference method the time derivative is approximated using a forward difference scheme.
 $$\frac{\partial}{\partial t} u(x_i,t) \bigg|_{t=t_n} \Rightarrow \frac{U_i^{n+1} - U_i^n}{\Delta t}$$
 The space derivative can be approximated in three different schemes:
-*** Forward Difference
-**** Description
+** Forward Difference
+*** Description
 $$\frac{\partial}{\partial x} u(x,t_n) \bigg|_{x=x_i} \Rightarrow \frac{U_{i+1}^{n+1} - U_i^n}{\Delta x}$$
 Thus we get,
 $$\frac{U_i^{n+1} - U_i^n}{\Delta t} + a \frac{U_{i+1}^{n+1} - U_i^n}{\Delta x} = 0$$
@@ -34,7 +36,7 @@ where,
 $$i=0,1,\ldots,N-2 \qquad n = 0,1,2,\ldots$$
 With the periodic boundary condition we define,
 $$U_{N-1}^{n+1} = \left( 1 + \sigma \right) U_{N-1}^n - \sigma U_{1}^n$$
-**** Stability
+*** Stability
 
 Using Fourier Analysis we get, the solution
 $$U_i^n = \beta^n e^{i l x_i}$$
@@ -42,9 +44,32 @@ Substituting in the scheme we get,
 $$\beta^{n+1} e^{i l x_i} = \left( 1 + \sigma \right) \beta^n e^{i l x_i} - \sigma \beta^n e^{i l x_{i+1}}$$
 Thus,
 $$\beta = 1 + \sigma - \sigma e^{i l \Delta x}$$
-Clearly, $\lvert \beta \rvert > 1$. Hence, the forward difference scheme is unconditionally unstable.
-*** Backward Difference
-**** Description
+$$\beta = 1 + \sigma - \sigma \left( cos(l \Delta x) + i sin(\Delta x) \right)$$
+$$\lvert \beta \rvert = 1 + 2 \sigma \left( \sigma +1 \right) \left( 1 - cos(l \Delta x) \right)$$
+
+- If $a<0$
+  
+  $$\sigma < 0$$
+  For a stable solution we need $\lvert \beta \rvert < 1$
+  $$1 + 2 \sigma \left( \sigma +1 \right) \left( 1 - cos(l \Delta x) \right) <1$$
+  $$2 \sigma \left( \sigma +1 \right) \left( 1 - cos(l \Delta x) \right) <0$$
+  Since $\sigma <0$ and $1 - cos(l \Delta x) > 0$
+  $$\sigma + 1 > 0 \Rightarrow \sigma > -1$$
+  Thus if $a<0$ the forward scheme is stable iff $\sigma > -1$
+
+- If $a>0$
+  
+  $$\sigma > 0$$
+  For a stable solution we need $\lvert \beta \rvert < 1$
+  $$1 + 2 \sigma \left( \sigma +1 \right) \left( 1 - cos(l \Delta x) \right) <1$$
+  $$2 \sigma \left( \sigma +1 \right) \left( 1 - cos(l \Delta x) \right) <0$$
+  Since $\sigma >0$ and $1 - cos(l \Delta x) > 0$
+  $$\sigma + 1<0 \Rightarrow \sigma < -1$$
+  This is not possible
+
+  Thus if $a>0$ the forward scheme is unconditionally unstable.
+** Backward Difference
+*** Description
 $$\frac{\partial}{\partial x} u(x,t_n) \bigg|_{x=x_i} \Rightarrow \frac{U_i^{n+1} - U_{i-1}^n}{\Delta x}$$
 Thus we get,
 $$\frac{U_i^{n+1} - U_i^n}{\Delta t} + a \frac{U_i^{n+1} - U_{i-1}^n}{\Delta x} = 0$$
@@ -56,7 +81,7 @@ where,
 $$i=1,2,\ldots,N-1 \qquad n = 0,1,2,\ldots$$
 With the periodic boundary condition we define,
 $$U_{0}^{n+1} = \left( 1 - \sigma \right) U_{0}^n + \sigma U_{N-2}^n$$
-**** Stability
+*** Stability
 
 Using Fourier Analysis we get, the solution
 $$U_i^n = \beta^n e^{i l x_i}$$
@@ -66,9 +91,31 @@ Thus,
 $$\beta = 1 - \sigma + \sigma e^{- i l \Delta x}$$
 $$\beta = 1 - \sigma + \sigma cos(l \Delta x) - i \sigma sin(l \Delta x)$$
 $$\lvert \beta \rvert = 1 + 2 \sigma \left( \sigma -1 \right) \left( 1 - cos(l \Delta x) \right)$$
-$\lvert \beta \rvert < 1$ only when $\sigma < 1$. Hence the bacward difference scheme is stable only when $\sigma < 1$.
-*** Central Difference
-**** Description
+
+- If $a<0$
+  
+  $$\sigma < 0$$
+  For a stable solution we need $\lvert \beta \rvert < 1$
+  $$1 + 2 \sigma \left( \sigma -1 \right) \left( 1 - cos(l \Delta x) \right) <1$$
+  $$2 \sigma \left( \sigma -1 \right) \left( 1 - cos(l \Delta x) \right) <0$$
+  Since $\sigma <0$ and $1 - cos(l \Delta x) > 0$
+  $$\sigma - 1 > 0 \Rightarrow \sigma > 1$$
+  This is not possible
+
+  Thus if $a<0$ the backward scheme is unconditionally unstable.
+
+- If $a>0$
+  
+  $$\sigma > 0$$
+  For a stable solution we need $\lvert \beta \rvert < 1$
+  $$1 + 2 \sigma \left( \sigma -1 \right) \left( 1 - cos(l \Delta x) \right) <1$$
+  $$2 \sigma \left( \sigma -1 \right) \left( 1 - cos(l \Delta x) \right) <0$$
+  Since $\sigma >0$ and $1 - cos(l \Delta x) > 0$
+  $$\sigma -1 < 0 \Rightarrow \sigma < 1$$
+
+  Thus if $a>0$ the backward scheme is stable iff $\sigma < 1$.
+** Central Difference
+*** Description
 $$\frac{\partial}{\partial x} u(x,t_n) \bigg|_{x=x_i} \Rightarrow \frac{U_{i+1}^{n+1} - U_{i-1}^n}{\Delta x}$$
 Thus we get,
 $$\frac{U_i^{n+1} - U_i^n}{\Delta t} + a \frac{U_{i+1}^{n+1} - U_{i-1}^n}{\Delta x} = 0$$
@@ -81,7 +128,7 @@ $$i=1,2,\ldots,N-2 \qquad n = 0,1,2,\ldots$$
 With the periodic boundary condition we define,
 $$U_0^{n+1} = U_0^n - \frac{\sigma}{2} U_{1}^n + \frac{\sigma}{2} U_{N-2}^n$$
 $$U_{N-1}^{n+1} = U_{N-1}^n - \frac{\sigma}{2} U_{1}^n + \frac{\sigma}{2} U_{N-2}^n$$
-**** Stability
+*** Stability
 
 Using Fourier Analysis we get, the solution
 $$U_i^n = \beta^n e^{i l x_i}$$
@@ -93,13 +140,13 @@ $$\lvert \beta \rvert = 1 + \sigma^{2} \sin^{2} (l \Delta x)$$
 Clearly, $\lvert \beta \rvert > 1$. Hence, the central difference scheme is unconditionally unstable.
 
 But $\beta$ is close to one if $\sigma < 1$, meaning the solution slowly grows in amplitude for $\sigma < 1$
-** Implementation
+* Implementation
 #+BEGIN_SRC c++
 #include <iostream>
 #include <vector>
 #+END_SRC
 
-*** Forward Difference
+** Forward Difference
 #+BEGIN_SRC c++
 // This method returns the current state of the solution after n time steps
 vector<double> nsol(const int n, const double sigma, const vector<double> &u)
@@ -120,7 +167,7 @@ vector<double> nsol(const int n, const double sigma, const vector<double> &u)
     return u_next;
 }
 #+END_SRC
-*** Backward Difference
+** Backward Difference
 #+BEGIN_SRC c++
 // This method returns the current state of the solution after n time steps
 vector<double> nsol(const int n, const double sigma, const vector<double> &u)
@@ -141,7 +188,7 @@ vector<double> nsol(const int n, const double sigma, const vector<double> &u)
     return u_next;
 }
 #+END_SRC
-*** Central Difference
+** Central Difference
 #+BEGIN_SRC c++
 // This method returns the current state of the solution after n time steps
 vector<double> nsol(const int n, const double sigma, const vector<double> &u)
