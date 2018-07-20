@@ -116,9 +116,9 @@ $$\lvert \beta \rvert = 1 + 2 \sigma \left( \sigma -1 \right) \left( 1 - cos(l \
   Thus if $a>0$ the backward scheme is stable iff $\sigma < 1$.
 ** Central Difference
 *** Description
-$$\frac{\partial}{\partial x} u(x,t_n) \bigg|_{x=x_i} \Rightarrow \frac{U_{i+1}^{n+1} - U_{i-1}^n}{\Delta x}$$
+$$\frac{\partial}{\partial x} u(x,t_n) \bigg|_{x=x_i} \Rightarrow \frac{U_{i+1}^n - U_{i-1}^n}{\Delta x}$$
 Thus we get,
-$$\frac{U_i^{n+1} - U_i^n}{\Delta t} + a \frac{U_{i+1}^{n+1} - U_{i-1}^n}{\Delta x} = 0$$
+$$\frac{U_i^{n+1} - U_i^n}{\Delta t} + a \frac{U_{i+1}^{n} - U_{i-1}^n}{\Delta x} = 0$$
 Define,
 $$\sigma = \frac{a \Delta t}{\Delta x}$$
 Rearranging we get,
@@ -140,6 +140,45 @@ $$\lvert \beta \rvert = 1 + \sigma^{2} \sin^{2} (l \Delta x)$$
 Clearly, $\lvert \beta \rvert > 1$. Hence, the central difference scheme is unconditionally unstable.
 
 But $\beta$ is close to one if $\sigma < 1$, meaning the solution slowly grows in amplitude for $\sigma < 1$
+** Lax Wendroff Scheme
+*** Description
+Consider the Taylor Series Expansion of $u(x_i,t_{n+1})$,
+$$u(x_i,t_{n+1}) = u(x_i,t_n) + \Delta t \cdot u_t (x_i,t_n) + \frac{\Delta t^2}{2} \cdot u_{tt} (x_i,t_n) + O(\Delta t^2)$$
+From the advection equation we have
+$$u_t = -a \cdot u_x$$
+Thus,
+$$u_{tt} = -a \cdot u_{xt}$$
+$$u_{tt} = a^2 \cdot u_{xx}$$
+Substituting we have,
+$$u(x_i,t_{n+1}) = u(x_i,t_n) - a \Delta t \cdot u_x (x_i,t_n) + a^2 \frac{\Delta t^2}{2} \cdot u_{xx} (x_i, t_n) + O(\Delta t^2)$$
+Replacing with the approximation and using central difference for the derivatives the scheme becomes,
+$$U_i^{n+1} = U_i^n - \frac{a \Delta t}{2 \Delta x} (U_{i+1}^n - U_{i-1}^n) + \frac{a^2 \Delta t^2}{2 \Delta x^2} (U_{i-1}^n - 2 U_i^n + U_{i+1}^n)$$
+Now define,
+$$\sigma = \frac{a \Delta t}{\Delta x}$$
+Thus,
+$$U_i^{n+1} = U_i^n - \frac{\sigma}{2} (U_{i+1}^n - U_{i-1}^n) + \frac{\sigma^2}{2} (U_{i-1}^n - 2 U_i^n + U_{i+1}^n)$$
+$$U_i^{n+1} = \frac{\sigma \left( \sigma + 1 \right)}{2} U_{i-1}^n + \left( 1 - \sigma^2 \right) U_i^n + \frac{\sigma \left( \sigma - 1 \right)}{2} U_{i+1}^n$$
+where,
+$$i=1,2,\ldots,N-2 \qquad n = 0,1,2,\ldots$$
+With the periodic boundary condition we define,
+$$U_0^{n+1} = \frac{\sigma \left( \sigma + 1 \right)}{2} U_{N-2}^n + \left( 1 - \sigma^2 \right) U_0^n + \frac{\sigma \left( \sigma - 1 \right)}{2} U_{1}^n$$
+$$U_{N-1}^{n+1} = \frac{\sigma \left( \sigma + 1 \right)}{2} U_{N-2}^n + \left( 1 - \sigma^2 \right) U_{N-1}^n + \frac{\sigma \left( \sigma - 1 \right)}{2} U_{1}^n$$
+*** Stability
+
+Using Fourier Analysis we get, the solution
+$$U_i^n = \beta^n e^{i l x_i}$$
+Substituting in the scheme we get,
+$$\beta^{n+1} e^{i l \Delta x} = \frac{\sigma \left( \sigma + 1 \right)}{2} \beta^{n} e^{i l x_{i-1}} + \left( 1 - \sigma^2 \right) \beta^{n} e^{i l x_i} + \frac{\sigma \left( \sigma - 1 \right)}{2} \beta^{n} e^{i l x_{i+1}}$$
+Thus,
+$$\beta = \frac{\sigma \left( \sigma + 1 \right)}{2} e^{- i l \Delta x} + \left( 1 - \sigma^2 \right) + \frac{\sigma \left( \sigma - 1 \right)}{2} e^{i l \Delta x}$$
+$$\beta = \frac{\sigma}{2} \left( \sigma (e^{i l \Delta x} + e^{- i l \Delta x}) - (e^{i l \Delta x} - e^{- i l \Delta x}) \right) + 1 - \sigma^2$$
+$$\beta = \sigma^2 cos(l \Delta x) - \sigma sin(l \Delta x) + 1 - \sigma^2$$
+$$\lvert \beta \rvert = \sigma^2 cos(l \Delta x) - \sigma sin(l \Delta x) + 1 - \sigma^2$$
+
+For $\lvert \beta \rvert < 1$, 
+$$\lvert \sigma \rvert < 1$$
+
+Thus the scheme is stable for $\lvert \sigma \rvert < 1$.
 * Implementation
 #+BEGIN_SRC c++
 #include <iostream>
@@ -210,3 +249,4 @@ vector<double> nsol(const int n, const double sigma, const vector<double> &u)
     return u_next;
 }
 #+END_SRC
+** Lax Wendroff Scheme
